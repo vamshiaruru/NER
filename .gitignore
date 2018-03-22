@@ -82,7 +82,7 @@ target/
 *.pyc
 __pycache__/
 local_settings.py
-
+*.csv
 .env
 db.sqlite3
 /credentials.py
