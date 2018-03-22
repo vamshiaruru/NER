@@ -1,0 +1,78 @@
+[All code, vectors, precision, recall, fscore, cost for each epoch, and this 
+report are all on github at: https://github.com/vamshiaruru/NER]
+
+To check the efficiency of various word vector (Skipgram, Glove, CBOW) models in
+the task of NER,a simple one layer Nueral network was implemented. The number of
+nuerons in hidden layer is 100,the number of output nuerons is 5, one for each 
+Named Entity in the corpus. The activation function in the hidden layer is RELU, 
+and the cost calculated was of cross entropy after scaling the output layer with
+sigmoid. Each model was trained over training data for 30 epochs with AdamOptimizer
+ given by Tensorflow, with a learning rate of 0.001. 
+
+Skipgram and CBOW vectors were generated from the corpus we have using library
+"gensim".GLOVE vectors were generated on the same corpus using the standford nlp
+project code obtained from github (https://github.com/stanfordnlp/GloVe). 
+
+Additionally, fasttext vectors from facebook was also used to perform the same 
+task. But we are not comparing these results with those of skipgram, CBOW and 
+GLOVE because fasttext vectors were pre-trained over a very large corpus and are
+300 dimensional each (where as SKIPGRAM, CBOW and GLOVE vectors were 100 
+dimensional.) Do note that fasttext internally uses skipgram model to generate
+vectors as well. 
+********************************************************************************
+FOR CBOW (continuous bag of words) model
+
+Tags:       Others     PERSON     MISC       ORG        LOC
+Precision: [0.87065736 0.64935065 0.59749005 0.36801942 0.49792989]
+Recall   : [0.91596213 0.15163769 0.69552824 0.37084935 0.45590094]
+fscore   : [0.89273533 0.24586133 0.64279246 0.36942897 0.47598945]
+********************************************************************************
+FOR SKIPGRAM MODEL
+
+tags       Others      PERSON     MISC       ORG        LOC
+Precision: [0.88189163 0.74803475 0.85772796 0.79871912 0.74589603]
+Recall   : [0.97280502 0.36554792 0.70889008 0.30513806 0.55117513]
+fscore   : [0.92512013 0.49110417 0.77623878 0.44157815 0.63391949]
+********************************************************************************
+For GLOVE MODEL
+
+Tags       Others      PERSON     MISC       ORG        LOC     
+Precision: [0.86686548 0.84318315 0.8898423  0.71417565 0.8214683 ]
+Recall   : [0.98395774 0.29134654 0.68359166 0.32401258 0.37326257]
+fscore   : [0.92170769 0.43305785 0.77319899 0.44578024 0.51329279]
+********************************************************************************
+
+As can be seen, CBOW gave a compartively bad performance compared to the other 
+two models. Skipgram model gave the best peformance among the three, with GLOVE
+model coming the second. 
+
+********************************************************************************
+FOR FASTTEXT VECTORS
+
+Tags       Others      PERSON     MISC       ORG        LOC     
+Precision: [0.96646475 0.87566964 0.89472756 0.7068708  0.88888889]
+Recall   : [0.9769774  0.79316619 0.90397292 0.66165676 0.82891079]
+fscore   : [0.97169264 0.83237853 0.89932648 0.68351688 0.85785275]
+********************************************************************************
+With fasttext vectors, the results are almost as good as the naive bayes model.
+For comparison, for the tag of "ORG" fscore in naive bayes (0.52) is less than
+the same with fasttext vectors(0.67), the fscore for the tag LOC in naive-bayes
+is 0.8527, again lesser than the score with fasttext vectors (0.8578). For the 
+tag person, naive bayes works much better (fscore with naive bayes:0.87, with
+fasttext vectors it's 0.83). Fasttext vectors with a simple one layer nueral
+network performed atleast as good as naive bayes model, therefore it's very
+worthwhile to put more focus on the nueral net model. 
+
+Moreover, fasttext vectors have potential to work even better. For the standard
+30 epochs we have taken, the cost has been monotonically decreasig and scores on
+test data has been continuously increasing. So with more epochs and more trainig
+data, these vectors have potential to perform even better.
+
+There is ofcourse the question of why the Skipgram, CBOW and GLOVE models worked
+so abmysally bad when compared to fasttext vectors. There are several reasons I
+think are possible:
+    - Poor word vectors: The skipgram, CBOW and GLOVE word vectors were trained
+    over a significanly small amount of data when compared to fasttext vectors.
+    This I think is the major reason for this performance.
+    - Low dimensionality of word vectors: Skipgram, CBOW and GLOVE word vectors
+    are of 100 dimensions, Fasttext vectors are of 300 dimensions
